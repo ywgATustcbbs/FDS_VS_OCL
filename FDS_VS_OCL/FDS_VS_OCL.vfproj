@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="11.0" ProjectIdGuid="{996B9D63-3253-4AF2-AE91-2E0E0658DAF0}">
+	<Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Debug|x64">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include&quot;" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release&quot;" ModuleDefinitionFile="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include\mpi_f08.mod&quot;" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release\impi.lib&quot;"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" SubSystem="subSystemConsole"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|x64" WholeProgramOptimization="true">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include&quot;" RuntimeLibrary="rtMultiThreadedDLL"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release&quot;" ModuleDefinitionFile="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include\mpi_f08.mod&quot;" SubSystem="subSystemConsole" LargeAddressAware="addrAwareLarge" AdditionalDependencies="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release\impi.lib&quot;"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd;h;inc"/>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<File RelativePath=".\cons.f90"/>
+		<File RelativePath=".\ctrl.f90"/>
+		<File RelativePath=".\data.f90"/>
+		<File RelativePath=".\devc.f90"/>
+		<File RelativePath=".\divg.f90"/>
+		<File RelativePath=".\dump.f90"/>
+		<File RelativePath=".\evac.f90"/>
+		<File RelativePath=".\fire.f90"/>
+		<File RelativePath=".\func.f90"/>
+		<File RelativePath=".\geom.f90"/>
+		<File RelativePath=".\gsmv.f90"/>
+		<File RelativePath=".\hvac.f90"/>
+		<File RelativePath=".\ieva.f90"/>
+		<File RelativePath=".\init.f90"/>
+		<File RelativePath=".\main.f90"/>
+		<File RelativePath=".\mass.f90"/>
+		<File RelativePath=".\mesh.f90"/>
+		<File RelativePath=".\part.f90"/>
+		<File RelativePath=".\pois.f90"/>
+		<File RelativePath=".\prec.f90"/>
+		<File RelativePath=".\pres.f90"/>
+		<File RelativePath=".\radi.f90"/>
+		<File RelativePath=".\rcal.f90"/>
+		<File RelativePath=".\read.f90"/>
+		<File RelativePath=".\samr.f90"/>
+		<File RelativePath=".\scrc.f90"/>
+		<File RelativePath=".\smvv.f90"/>
+		<File RelativePath=".\soot.f90"/>
+		<File RelativePath=".\turb.f90"/>
+		<File RelativePath=".\type.f90"/>
+		<File RelativePath=".\vege.f90"/>
+		<File RelativePath=".\velo.f90"/>
+		<File RelativePath=".\wall.f90"/></Filter></Files>
+	<Globals/></VisualStudioProject>
