@@ -28,7 +28,7 @@
 !
 ! -----------------------------------------------------------------------------
 
-#ifdef _DEBUG_
+#ifdef _DEBUG_    
 submodule (Focal) Focal_Debug
   !!  Implementation module for focal debug routines.
   !!  This submodule is linked in the debug version of Focal build.
@@ -297,7 +297,7 @@ submodule (Focal) Focal_Debug
         else
 
           ! Error is in api calls
-          call fclErrorHandler(errcode,'fclDbgWait','clWaitForEvents|clGetEventInfo')
+          call fclDefaultErrorHandler(errcode,'fclDbgWait','clWaitForEvents|clGetEventInfo')
 
         end if
 
@@ -308,4 +308,4 @@ submodule (Focal) Focal_Debug
 
 
 end submodule Focal_Debug
-#endif
+#endif !_DEBUG_

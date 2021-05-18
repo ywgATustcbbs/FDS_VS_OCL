@@ -79,61 +79,88 @@ REAL(EB), ALLOCATABLE, DIMENSION(:)       :: REAL_BUFFER_1
 REAL(EB), ALLOCATABLE, DIMENSION(:,:)     :: REAL_BUFFER_2,REAL_BUFFER_3,REAL_BUFFER_5,REAL_BUFFER_6,REAL_BUFFER_8,&
                                              REAL_BUFFER_11,REAL_BUFFER_12,REAL_BUFFER_13,REAL_BUFFER_14
 
-!--------------------Opencl Test---------------------
+!============================================================================================================
+!                            Opencl Test
+!============================================================================================================
 
-integer, parameter :: cltest_Nelem = 5E8           ! No. of array elements
-real, parameter :: cltest_sumVal = 10.0            ! Target value for array sum
+!Using focal abstraction layer to run opencl code in fortran
 
-integer :: cltest_i                                ! Counter variable
-character(:), allocatable :: cltest_kernelSrc      ! Kernel source string
-type(fclDevice) :: cltest_device                   ! OpenCL device on which to run
-type(fclProgram) :: cltest_prog                    ! Focal program object
-type(fclKernel) :: cltest_sumKernel                ! Focal kernel object
-real(c_float), allocatable :: cltest_array1(:)              ! Host array 1
-real(c_float), allocatable :: cltest_array2(:)              ! Host array 2
-type(fclDeviceFloat) :: cltest_array1_d            ! Device array 1
-type(fclDeviceFloat) :: cltest_array2_d            ! Device array 2
+INTEGER, PARAMETER :: CLTEST_NELEM = 5E8                    ! No. of array elements, this will take ~2GB*2=4GB
+REAL, PARAMETER :: CLTEST_SUMVAL = 10.0                     ! Target value for array sum
+INTEGER :: CLTEST_I                                         ! Counter variable
+CHARACTER(:), ALLOCATABLE :: CLTEST_KERNELSRC               ! Kernel source string
+TYPE(FCLDEVICE) :: CLTEST_DEVICE                            ! OpenCL device on which to run
+TYPE(FCLPROGRAM) :: CLTEST_PROG                             ! Focal program object
+TYPE(FCLKERNEL) :: CLTEST_SUMKERNEL                         ! Focal kernel object
+REAL(C_FLOAT), ALLOCATABLE, DIMENSION(:) :: CLTEST_ARRAY1   ! Host array 1
+REAL(C_FLOAT), ALLOCATABLE, DIMENSION(:) :: CLTEST_ARRAY2   ! Host array 2
+TYPE(FCLDEVICEFLOAT) :: CLTEST_ARRAY1_D                     ! Device array 1
+TYPE(FCLDEVICEFLOAT) :: CLTEST_ARRAY2_D                     ! Device array 2
+INTEGER :: TIME_CPU_START,TIME_CPU_STOP,TIME_GPU_START_H2D,TIME_GPU_END_H2D,TIME_GPU_END_KERNEL,TIME_GPU_END_D2H
 
-allocate(cltest_array1(cltest_Nelem),cltest_array2(cltest_Nelem))
+
+ALLOCATE(CLTEST_ARRAY1(CLTEST_NELEM),CLTEST_ARRAY2(CLTEST_NELEM))
 
 ! Initialise OpenCL context, find all suitable devices that contains 1 or more vendor keywords in its name (case insensitive). and select device with most cores 
-cltest_device = fclInit(vendor='nvidia,amd,intel',sortBy='cores')
+CLTEST_DEVICE = FCLINIT(VENDOR='NVIDIA,AMD,INTEL',SORTBY='CORES')
 
 ! Select device with most cores and create command queue
-write(*,*) 'Using device: ',cltest_device%name
-call fclSetDefaultCommandQ(fclCreateCommandQ(cltest_device,enableProfiling=.true.))
+WRITE(*,*) 'Using device: ',CLTEST_DEVICE%name
+CALL FCLSETDEFAULTCOMMANDQ(FCLCREATECOMMANDQ(CLTEST_DEVICE,ENABLEPROFILING=.TRUE.))
 
-! Load kernel from file and compile
-cltest_kernelSrc = '__kernel void sum(const int size, const __global float * vec1, __global float * vec2){ int ii = get_global_id(0);  if(ii < size) vec2[ii] += vec1[ii];}'
-!call fclSourceFromFile('C:\\Users\\ustcy\\Desktop\\focal-master\\focal-master\\build\\test\\test\\sum.cl',kernelSrc)
-cltest_prog = fclCompileProgram(cltest_kernelSrc)
-cltest_sumKernel = fclGetProgramKernel(cltest_prog,'sum')
+! Load kernel from file and compile. Note kernels are c/c++ code which are CASE SENSITIVE!
+CLTEST_KERNELSRC = '__kernel void ker(const int size, const __global float * vec1, __global float * vec2){ int ii = get_global_id(0);  if(ii < size) vec2[ii] = vec1[ii] * 10.0;}'
 
-! Initialise device arrays
-call fclInitBuffer(cltest_array1_d,cltest_Nelem,access='r')
-call fclInitBuffer(cltest_array2_d,cltest_Nelem,access='rw')
+!Compile and retrive kernel
+CLTEST_PROG = FCLCOMPILEPROGRAM(CLTEST_KERNELSRC)
+CLTEST_SUMKERNEL = FCLGETPROGRAMKERNEL(CLTEST_PROG,'ker')
 
-! Initialise host array data
-do cltest_i=1,cltest_Nelem
-  cltest_array1(cltest_i) = cltest_i
-end do
-cltest_array2 = cltest_sumVal - cltest_array1
+! Initialise device(GPU) arrays
+CALL FCLINITBUFFER(CLTEST_ARRAY1_D,CLTEST_NELEM,ACCESS='R')
+CALL FCLINITBUFFER(CLTEST_ARRAY2_D,CLTEST_NELEM,ACCESS='RW')
 
-! Copy data to device
-cltest_array1_d = cltest_array1
-cltest_array2_d = cltest_array2
+! Initialise host(CPU) array data
+DO CLTEST_I=1,CLTEST_NELEM
+  CLTEST_ARRAY1(CLTEST_I) = CLTEST_I
+END DO
+
+CALL SYSTEM_CLOCK(TIME_CPU_START)
+CLTEST_ARRAY2 = CLTEST_SUMVAL * CLTEST_ARRAY1
+CALL SYSTEM_CLOCK(TIME_CPU_STOP)
+WRITE(*,*) 'CPU Method 0:', TIME_CPU_STOP-TIME_CPU_START
+
+CALL SYSTEM_CLOCK(TIME_CPU_START)
+DO CLTEST_I=1,CLTEST_NELEM
+  CLTEST_ARRAY2(CLTEST_I) = CLTEST_SUMVAL * CLTEST_ARRAY1(CLTEST_I)
+END DO
+CALL SYSTEM_CLOCK(TIME_CPU_STOP)
+WRITE(*,*) 'CPU Method 1:', TIME_CPU_STOP-TIME_CPU_START
+
+! Copy data to device (RAM -> vRAM)
+CALL SYSTEM_CLOCK(TIME_GPU_START_H2D)
+CLTEST_ARRAY1_D = CLTEST_ARRAY1
+CALL SYSTEM_CLOCK(TIME_GPU_END_H2D)
 
 ! Set global work size equal to array length and launch kernel
-cltest_sumKernel%global_work_size(1) = cltest_Nelem
-call cltest_sumKernel%launch(cltest_Nelem,cltest_array1_d,cltest_array2_d)
+CLTEST_SUMKERNEL%GLOBAL_WORK_SIZE(1) = CLTEST_NELEM
+CALL CLTEST_SUMKERNEL%LAUNCH(CLTEST_NELEM,CLTEST_ARRAY1_D,CLTEST_ARRAY2_D)
+CALL SYSTEM_CLOCK(TIME_GPU_END_KERNEL)
 
-! Copy result back to host and print out to check
-cltest_array2 = cltest_array2_d
-write(*,*) 'Nelem:', cltest_Nelem
-write(*,*) cltest_array2(1), cltest_array2(size(cltest_array2,1))
+! Copy result back to host (vRAM -> RAM) and print out to check
+CLTEST_ARRAY2 = CLTEST_ARRAY2_D
+CALL SYSTEM_CLOCK(TIME_GPU_END_D2H)
+WRITE(*,*) 'GPU H2D:', TIME_GPU_END_H2D-TIME_GPU_START_H2D
+WRITE(*,*) 'GPU Kernel:', TIME_GPU_END_KERNEL-TIME_GPU_END_H2D
+WRITE(*,*) 'GPU D2H:', TIME_GPU_END_D2H-TIME_GPU_END_KERNEL
 
 
-!--------------------End Opencl Test---------------------
+WRITE(*,*) 'Nelem:', CLTEST_NELEM
+WRITE(*,*) CLTEST_ARRAY2(1), CLTEST_ARRAY2(SIZE(CLTEST_ARRAY2,1))
+
+PAUSE 'Press Enter to continue...'
+!============================================================================================================
+!                            End Opencl Test
+!============================================================================================================
 
 ! Initialize OpenMP
 

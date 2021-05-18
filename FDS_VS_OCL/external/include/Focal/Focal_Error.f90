@@ -56,10 +56,9 @@ submodule (Focal) Focal_Error
       call c_abort()
     end if
 
-  end procedure fclDefaultErrorHandler
+    end procedure fclDefaultErrorHandler
   ! ---------------------------------------------------------------------------
-
-
+    
   module procedure fclHandleBuildError !(builderrcode,prog,ctx)
 
     integer :: i

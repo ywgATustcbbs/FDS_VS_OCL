@@ -28,7 +28,7 @@
 !
 ! -----------------------------------------------------------------------------
 
-#ifndef _DEBUG_
+#ifndef _DEBUG_    
 submodule (Focal) Focal_NoDebug
   !!  Implementation module for focal debug routines.
   !!  This submodule is linked in the release version of Focal build.
@@ -97,4 +97,4 @@ submodule (Focal) Focal_NoDebug
   ! ---------------------------------------------------------------------------
 
 end submodule Focal_NoDebug
-#endif
+#endif !_DEBUG_

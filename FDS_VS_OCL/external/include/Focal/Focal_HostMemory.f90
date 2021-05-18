@@ -86,12 +86,12 @@ submodule (Focal) Focal_HostMemory
                   CL_QUEUE_CONTEXT,c_sizeof(cl_context), &
                   c_loc(cl_context), size_ret)
 
-    call fclErrorHandler(errcode,'fclAllocHostPtr','clGetCommandQueueInfo')
+    call fclDefaultErrorHandler(errcode,'fclAllocHostPtr','clGetCommandQueueInfo')
 
     devicePtr = clCreateBuffer(cl_context, CL_MEM_ALLOC_HOST_PTR, nBytes,&
                                   C_NULL_PTR, errcode)
 
-    call fclErrorhandler(errcode,'fclAllocHostPtr','clCreateBuffer')
+    call fclDefaultErrorHandler(errcode,'fclAllocHostPtr','clCreateBuffer')
 
     fclHostPtrMap(n,2) = devicePtr
 
@@ -100,11 +100,11 @@ submodule (Focal) Focal_HostMemory
             ior(CL_MAP_WRITE,CL_MAP_READ), int(0,c_int64_t), nBytes, 0,&
             C_NULL_PTR, c_loc(mapEvent), errcode)
 
-    call fclErrorhandler(errcode,'fclAllocHostPtr','clEnqueueMapBuffer')
+    call fclDefaultErrorHandler(errcode,'fclAllocHostPtr','clEnqueueMapBuffer')
 
     errcode = clWaitForEvents(1,c_loc(mapEvent))
 
-    call fclErrorhandler(errcode,'fclAllocHostPtr','clWaitForEvents')
+    call fclDefaultErrorHandler(errcode,'fclAllocHostPtr','clWaitForEvents')
 
     fclHostPtrMap(n,1) = transfer(hostPtr,deviceptr)
     
@@ -200,13 +200,13 @@ submodule (Focal) Focal_HostMemory
 
     errcode = clEnqueueUnmapMemObject(cmdq%cl_command_queue, devicePtr, &
                  hostPtr,0,C_NULL_PTR,c_loc(unmapEvent))
-    call fclErrorHandler(errcode,'fclFreeHostPtr','clEnqueueUnmapMemObject')
+    call fclDefaultErrorHandler(errcode,'fclFreeHostPtr','clEnqueueUnmapMemObject')
 
     errcode = clWaitForEvents(1,c_loc(unmapEvent))
-    call fclErrorhandler(errcode,'fclFreeHostPtr','clWaitForEvents')
+    call fclDefaultErrorHandler(errcode,'fclFreeHostPtr','clWaitForEvents')
 
     errcode = clReleaseMemObject(devicePtr)
-    call fclErrorHandler(errcode,'fclFreeBuffer','clReleaseMemObject')
+    call fclDefaultErrorHandler(errcode,'fclFreeBuffer','clReleaseMemObject')
 
     fclHostPtrMap(n,:) = -1
 
