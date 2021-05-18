@@ -44,6 +44,8 @@ USE SCRC, ONLY: SCARC_SETUP, SCARC_SOLVER
 USE SOOT_ROUTINES, ONLY: CALC_AGGLOMERATION
 USE GLOBALMATRIX_SOLVER, ONLY : GLMAT_SOLVER_SETUP_H, GLMAT_SOLVER_H, COPY_H_OMESH_TO_MESH,FINISH_GLMAT_SOLVER_H
 
+USE Focal
+
 IMPLICIT NONE
 
 ! Miscellaneous declarations
@@ -76,6 +78,62 @@ CHARACTER(MPI_MAX_PROCESSOR_NAME) :: PNAME
 REAL(EB), ALLOCATABLE, DIMENSION(:)       :: REAL_BUFFER_1
 REAL(EB), ALLOCATABLE, DIMENSION(:,:)     :: REAL_BUFFER_2,REAL_BUFFER_3,REAL_BUFFER_5,REAL_BUFFER_6,REAL_BUFFER_8,&
                                              REAL_BUFFER_11,REAL_BUFFER_12,REAL_BUFFER_13,REAL_BUFFER_14
+
+!--------------------Opencl Test---------------------
+
+integer, parameter :: cltest_Nelem = 5E8           ! No. of array elements
+real, parameter :: cltest_sumVal = 10.0            ! Target value for array sum
+
+integer :: cltest_i                                ! Counter variable
+character(:), allocatable :: cltest_kernelSrc      ! Kernel source string
+type(fclDevice) :: cltest_device                   ! OpenCL device on which to run
+type(fclProgram) :: cltest_prog                    ! Focal program object
+type(fclKernel) :: cltest_sumKernel                ! Focal kernel object
+real(c_float), allocatable :: cltest_array1(:)              ! Host array 1
+real(c_float), allocatable :: cltest_array2(:)              ! Host array 2
+type(fclDeviceFloat) :: cltest_array1_d            ! Device array 1
+type(fclDeviceFloat) :: cltest_array2_d            ! Device array 2
+
+allocate(cltest_array1(cltest_Nelem),cltest_array2(cltest_Nelem))
+
+! Initialise OpenCL context, find all suitable devices that contains 1 or more vendor keywords in its name (case insensitive). and select device with most cores 
+cltest_device = fclInit(vendor='nvidia,amd,intel',sortBy='cores')
+
+! Select device with most cores and create command queue
+write(*,*) 'Using device: ',cltest_device%name
+call fclSetDefaultCommandQ(fclCreateCommandQ(cltest_device,enableProfiling=.true.))
+
+! Load kernel from file and compile
+cltest_kernelSrc = '__kernel void sum(const int size, const __global float * vec1, __global float * vec2){ int ii = get_global_id(0);  if(ii < size) vec2[ii] += vec1[ii];}'
+!call fclSourceFromFile('C:\\Users\\ustcy\\Desktop\\focal-master\\focal-master\\build\\test\\test\\sum.cl',kernelSrc)
+cltest_prog = fclCompileProgram(cltest_kernelSrc)
+cltest_sumKernel = fclGetProgramKernel(cltest_prog,'sum')
+
+! Initialise device arrays
+call fclInitBuffer(cltest_array1_d,cltest_Nelem,access='r')
+call fclInitBuffer(cltest_array2_d,cltest_Nelem,access='rw')
+
+! Initialise host array data
+do cltest_i=1,cltest_Nelem
+  cltest_array1(cltest_i) = cltest_i
+end do
+cltest_array2 = cltest_sumVal - cltest_array1
+
+! Copy data to device
+cltest_array1_d = cltest_array1
+cltest_array2_d = cltest_array2
+
+! Set global work size equal to array length and launch kernel
+cltest_sumKernel%global_work_size(1) = cltest_Nelem
+call cltest_sumKernel%launch(cltest_Nelem,cltest_array1_d,cltest_array2_d)
+
+! Copy result back to host and print out to check
+cltest_array2 = cltest_array2_d
+write(*,*) 'Nelem:', cltest_Nelem
+write(*,*) cltest_array2(1), cltest_array2(size(cltest_array2,1))
+
+
+!--------------------End Opencl Test---------------------
 
 ! Initialize OpenMP
 

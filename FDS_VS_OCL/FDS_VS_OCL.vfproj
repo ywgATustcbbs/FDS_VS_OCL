@@ -15,8 +15,8 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include&quot;" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL"/>
-				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release&quot;" ModuleDefinitionFile="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include\mpi_f08.mod&quot;" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release\impi.lib&quot;"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" MultiProcessorCompilation="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="&quot;$(I_MPI_ONEAPI_ROOT)\include&quot; &quot;$(ProjectDir)\external\include\clfortran&quot; &quot;$(ProjectDir)\external\include\Focal&quot; &quot;$(ProjectDir)\external\include\fortran-utils&quot; &quot;$(ProjectDir)\external\include\M_strings&quot;" PreprocessorDefinitions="_DEBUG_" WarnInterfaces="true" Traceback="true" BoundsCheck="true" StackFrameCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;$(I_MPI_ONEAPI_ROOT)\lib\release&quot; &quot;$(ProjectDir)\external\lib&quot;" ModuleDefinitionFile="&quot;$(I_MPI_ONEAPI_ROOT)\include\mpi_f08.mod&quot;" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;impi.lib&quot; &quot;OpenCL.lib&quot;"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 				<Tool Name="VFCustomBuildTool"/>
@@ -35,8 +35,8 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Release|x64" WholeProgramOptimization="true">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include&quot;" RuntimeLibrary="rtMultiThreadedDLL"/>
-				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release&quot;" ModuleDefinitionFile="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\include\mpi_f08.mod&quot;" SubSystem="subSystemConsole" LargeAddressAware="addrAwareLarge" AdditionalDependencies="&quot;C:\Program Files (x86)\Intel\oneAPI\mpi\latest\lib\release\impi.lib&quot;"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" MultiProcessorCompilation="true" Optimization="optimizeFull" Parallelization="true" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="&quot;$(I_MPI_ONEAPI_ROOT)\include&quot; &quot;$(ProjectDir)\external\include\clfortran&quot; &quot;$(ProjectDir)\external\include\Focal&quot; &quot;$(ProjectDir)\external\include\fortran-utils&quot; &quot;$(ProjectDir)\external\include\M_strings&quot;"/>
+				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;$(I_MPI_ONEAPI_ROOT)\lib\release&quot; &quot;$(ProjectDir)\external\lib&quot;" ModuleDefinitionFile="&quot;$(I_MPI_ONEAPI_ROOT)\include\mpi_f08.mod&quot;" SubSystem="subSystemConsole" LargeAddressAware="addrAwareLarge" AdditionalDependencies="&quot;impi.lib&quot; &quot;OpenCL.lib&quot;"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
 				<Tool Name="VFCustomBuildTool"/>
@@ -48,6 +48,24 @@
 		<Filter Name="Header Files" Filter="fi;fd;h;inc"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<Filter Name="external">
+		<Filter Name="clfortran">
+		<File RelativePath=".\external\include\clfortran\clfortran.f90"/></Filter>
+		<Filter Name="focal">
+		<File RelativePath=".\external\include\Focal\Focal.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Debug.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Error.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_HostMemory.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Memory.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_NoDebug.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Profile.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Query.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Setup.f90"/>
+		<File RelativePath=".\external\include\Focal\Focal_Utils.f90"/></Filter>
+		<Filter Name="futils_sorting">
+		<File RelativePath=".\external\include\fortran-utils\futils_sorting.f90"/></Filter>
+		<Filter Name="M_strings">
+		<File RelativePath=".\external\include\M_strings\M_strings.f90"/></Filter></Filter>
 		<File RelativePath=".\cons.f90"/>
 		<File RelativePath=".\ctrl.f90"/>
 		<File RelativePath=".\data.f90"/>
